@@ -4,31 +4,40 @@
 
 Point2D Cat::Move(World* world)
 {
-  auto cat = world->getCat();
-  std::map<int, std::map<int, bool>> visited;
+  // A. producer and consumer queue to build the map of cameFrom
+  // B. navigate through the map of cameFrom in the moment we find an exit and return the path
 
-  std::vector<queueEntry> queue;
+  auto cat = world->getCat();
+  std::map<int, std::map<int, bool>> cameFrom;
+
+  std::vector<queueEntry> frontier;
   // bootstrap the first element into the queue
-  queue.push_back({cat, 0});
+  frontier.push_back({cat, 0});
 
   // while we have elements to be visited, visit them
-  while (!queue.empty())
+  while (!frontier.empty())
   {
     // fetching the first element
-    auto head = queue[0];
-    queue.erase(queue.begin());
+    auto head = frontier[0];
+    frontier.erase(frontier.begin());
 
     // mark the head as visited
-    // for each neighbor
+    // add neighbors to the queue, for each neighbor
     // - check if is not visited yet
     // - check if is not in the queue
-    // - check if it can be visited
+    // - check if it is not blocked
     // - add to the queue adding 1 to the weight
-    // - mark the neighbor as it came from the current head we popped
-    
+    // - mark head position as it cameFrom
+    // visit head neighbors
+
+    // if neighbor is exit, exit point = head position
 
     // here you code your win condition and whatever your navigation process is
   }
+
+  // populate the path to be returned
+  // iterate from the exit point up to the origin and build the path
+  // the first element is the cat move and the last is the catcher
 
   auto rand = Random::Range(0,5);
   auto pos = world->getCat();
