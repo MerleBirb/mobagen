@@ -25,6 +25,18 @@ World::World(Engine *pEngine, int size): GameObject(pEngine), sideSize(size){
   clearWorld();
 }
 
+World::World(Engine* pEngine, int mapSideSize, bool isCatTurn, Point2D catPos, std::vector<bool>  map):
+     GameObject(pEngine), sideSize(mapSideSize), catPosition(catPos), catTurn(isCatTurn), worldState(std::move(map)) {
+  catcher = new Catcher();
+  cat = new Cat();
+}
+
+World::~World() {
+  delete(cat);
+  delete(catcher);
+}
+
+
 void World::clearWorld() {
   worldState.clear();
   worldState.resize(sideSize*sideSize);
@@ -134,9 +146,12 @@ void World::OnGui(ImGuiContext *context) {
                 1000.0f / ImGui::GetIO().Framerate,
                 ImGui::GetIO().Framerate);
     static auto newSize = sideSize;
-    if(ImGui::SliderInt("Side Size", &newSize, 3, 21) && sideSize != (newSize/2)*2 + 1) {
-        sideSize = (newSize/2)*2 + 1;
-        clearWorld();
+    if(ImGui::SliderInt("Side Size", &newSize, 5, 29)) {
+        newSize = (newSize/4)*4 + 1;
+        if(newSize!=sideSize) {
+          sideSize = newSize;
+          clearWorld();
+        }
     }
     if(ImGui::SliderFloat("Turn Duration", &timeBetweenAITicks, 0.1, 30) && sideSize != (newSize/2)*2 + 1) {
       sideSize = (newSize/2)*2 + 1;
@@ -260,11 +275,6 @@ bool World::catcherCanMoveToPosition(Point2D p) const {
          p.y!=catPosition.y) &&
          abs(p.x) <= sideOver2 &&
          abs(p.y) <= sideOver2;
-}
-
-World::World(Engine* pEngine, int size, bool catTurn, Point2D catPos, std::vector<bool> world): GameObject(pEngine), sideSize(size), catTurn(catTurn), catPosition(catPos), worldState(std::move(world))  {
-  cat = new Cat();
-  catcher = new Catcher();
 }
 
 bool World::catWinsOnSpace(Point2D point)
