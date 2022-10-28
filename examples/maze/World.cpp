@@ -39,34 +39,36 @@ bool World::GetWest(const Point2D& point) {
 }
 
 void World::SetNode(const Point2D& point, const Node& node) {
-  data[Point2DtoIndex(point)] = node.GetNorth();
-  data[Point2DtoIndex(point)+3] = node.GetEast();
-  data[Point2DtoIndex(point)+(sideSize+1)*2] = node.GetSouth();
-  data[Point2DtoIndex(point)+1] = node.GetWest();
+    // todo implement this
+
+    data[Point2DtoIndex(point)] = node.GetNorth();
+    data[Point2DtoIndex(point)+3] = node.GetEast();
+    data[Point2DtoIndex(point)+(sideSize+1)*2] = node.GetSouth();
+    data[Point2DtoIndex(point)+1] = node.GetWest();
 }
 void World::SetNorth(const Point2D& point, const bool& state) {
   // todo implement this
   // N = (((side + 1) * y) * 2) + (x * 2)
 
-  data[Point2DtoIndex(point)] = state;
+    data[Point2DtoIndex(point)] = state;
 }
 void World::SetEast(const Point2D& point, const bool& state) {
   // todo implement this
   // E = (((side + 1) * y) * 2) + ((x + 1) * 2)
 
-  data[Point2DtoIndex(point)+3] = state;
+    data[Point2DtoIndex(point)+3] = state;
 }
 void World::SetSouth(const Point2D& point, const bool& state) {
   // todo implement this
   // S = (((side + 1) * (y + 1)) * 2) + (x * 2)
 
-  data[Point2DtoIndex(point)+(sideSize+1)*2] = state;
+    data[Point2DtoIndex(point)+(sideSize+1)*2] = state;
 }
 void World::SetWest(const Point2D& point, const bool& state) {
   // todo implement this
   // W = (((side + 1) * y) * 2) + ((x * 2) + 1)
 
-  data[Point2DtoIndex(point)+1] = state;
+    data[Point2DtoIndex(point)+1] = state;
 }
 
 void World::Start() {
