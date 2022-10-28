@@ -12,11 +12,13 @@ class World: GameObject {
  private:
   int sideSize;
 
-  MazeGenerator generator;
+  std::vector<MazeGeneratorBase*> generators;
+  int generatorId=0;
   bool isSimulating = false;
-  float timeBetweenAITicks=1;
-  float timeForNextTick=1;
+  float timeBetweenAITicks=0.0;
+  float timeForNextTick=0;
   int64_t moveDuration=0;
+  int64_t totalTime=0;
 
   // .=
   // |
@@ -32,6 +34,7 @@ class World: GameObject {
     return (point.y + sizeOver2)*(sideSize+1)*2 + (point.x + sizeOver2)*2;
   }
  public:
+  ~World();
   explicit World(Engine* pEngine, int size);
 
   Node GetNode(const Point2D& point);
@@ -40,11 +43,11 @@ class World: GameObject {
   bool GetSouth(const Point2D& point);
   bool GetWest(const Point2D& point);
 
-  inline void SetNode(const Point2D& point, const Node& node);
-  inline void SetNorth(const Point2D& point, const bool& state);
-  inline void SetEast(const Point2D& point, const bool& state);
-  inline void SetSouth(const Point2D& point, const bool& state);
-  inline void SetWest(const Point2D& point, const bool& state);
+  void SetNode(const Point2D& point, const Node& node);
+  void SetNorth(const Point2D& point, const bool& state);
+  void SetEast(const Point2D& point, const bool& state);
+  void SetSouth(const Point2D& point, const bool& state);
+  void SetWest(const Point2D& point, const bool& state);
 
   void Start() override;
   void OnGui(ImGuiContext *context) override;
@@ -54,6 +57,8 @@ class World: GameObject {
   void Clear();
 
   void SetNodeColor(const Point2D& node, const Color32& color);
+
+  int GetSize() const;
  private:
   void step();
 };
