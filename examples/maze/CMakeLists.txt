@@ -15,7 +15,7 @@ file(GLOB MAZE_SRC
 
 install (FILES ${MAZE_INC} DESTINATION include/maze)
 
-add_executable(maze ${MAZE_SRC} ${MAZE_INC})
+add_executable(maze ${MAZE_SRC} ${MAZE_INC}  "generators/KruskalGenerator.h" "generators/KruskalGenerator.cpp")
 
 target_include_directories(maze PUBLIC ${SDL2_INCLUDE_DIR} ${CORE_INC_DIR})
 
