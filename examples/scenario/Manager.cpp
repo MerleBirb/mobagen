@@ -1,12 +1,14 @@
 #include "Manager.h"
 #include "Point2D.h"
 #include "generators/RandomGenerator.h"
+#include "generators/ImprovedGenerator.h"
 #include <chrono>
 #include <iostream>
 Manager::Manager(Engine* engine, int size)
     : GameObject(engine) {
   // todo: add your generator here
   generators.push_back(new RandomScenarioGenerator());
+  generators.push_back(new ImprovedGenerator());
 }
 
 void Manager::SetPixels(std::vector<Color32> &input) {
