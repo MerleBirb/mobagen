@@ -1,6 +1,3 @@
-execute_process( COMMAND git submodule update --init --recursive )
-#set_directory_properties( PROPERTIES CLEAN_NO_CUSTOM 1)
-
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
@@ -19,8 +16,8 @@ ELSE ()
     #  ELSE ()
     #    add_library (whereami SHARED ${CMAKE_CURRENT_SOURCE_DIR}/whereami/src/whereami.c ${CMAKE_CURRENT_SOURCE_DIR}/whereami/src/whereami.h)
     #  ENDIF ()
-    set( SDL_STATIC OFF CACHE BOOL "Build the static SDL library" )
-    set( SDL_SHARED ON CACHE BOOL "Build the shared SDL library" )
+#    set( SDL_STATIC OFF CACHE BOOL "Build the static SDL library" )
+#    set( SDL_SHARED ON CACHE BOOL "Build the shared SDL library" )
 
     #  set( glew-cmake_BUILD_SHARED ON CACHE BOOL "Build the shared glew library" )
     #  set( glew-cmake_BUILD_STATIC OFF CACHE BOOL "Build the static glew library" )
@@ -28,34 +25,72 @@ ELSE ()
     #  set( glew-cmake_BUILD_MULTI_CONTEXT OFF CACHE BOOL "Build the multi context glew library" )
     #
     #  add_subdirectory( glew )
-ENDIF ()
+ENDIF()
+
+set(SDL_SHARED OFF CACHE BOOL "SDL_SHARED")
+SET(SDL_STATIC ON CACHE BOOL "SDL_STATIC")
+SET(SDL_STATIC_PIC ON CACHE BOOL "SDL_STATIC_PIC")
+
 add_definitions(-DHAVE_LIBC=OFF)
+# emsdk
+#CPMAddPackage("gh:emscripten-core/emsdk#3.1.25")
 
-add_subdirectory( SDL )
+# SDL2
+CPMAddPackage(
+        NAME SDL2
+        VERSION 2.24.2
+        URL "https://github.com/libsdl-org/SDL/archive/refs/tags/release-2.24.2.zip"
+        OPTIONS "SDL2_DISABLE_INSTALL TRUE"
+)
+find_package(SDL2 REQUIRED)
+if (SDL2_ADDED)
+    file(GLOB SDL_HEADERS "${SDL_SOURCE_DIR}/include/*.h")
 
-set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
-add_library(IMGUI STATIC)
+    # Create a target that copies headers at build time, when they change
+    add_custom_target(sdl_copy_headers_in_build_dir
+            COMMAND ${CMAKE_COMMAND} -E copy_directory "${SDL_SOURCE_DIR}/include" "${CMAKE_BINARY_DIR}/SDLHeaders/SDL2"
+            DEPENDS ${SDL_HEADERS})
 
-target_sources( IMGUI
-        PRIVATE
-        ${IMGUI_DIR}/imgui_demo.cpp
-        ${IMGUI_DIR}/imgui_draw.cpp
-        ${IMGUI_DIR}/imgui_tables.cpp
-        ${IMGUI_DIR}/imgui_widgets.cpp
-        ${IMGUI_DIR}/imgui.cpp
+    # Make SDL depend from it
+    add_dependencies(SDL2 sdl_copy_headers_in_build_dir)
 
-        PRIVATE
-        ${IMGUI_DIR}/backends/imgui_impl_sdlrenderer.cpp
-        ${IMGUI_DIR}/backends/imgui_impl_sdl.cpp
-        )
+    # And add the directory where headers have been copied as an interface include dir
+    target_include_directories(SDL2 INTERFACE "${CMAKE_BINARY_DIR}/SDLHeaders")
 
-target_include_directories( IMGUI
-        PUBLIC ${IMGUI_DIR}
-        PUBLIC ${IMGUI_DIR}/backends
-        PUBLIC ${SDL2_DIR}/include
-        )
+    set (SDL2_INCLUDE_DIR ${SDL2_SOURCE_DIR}/include)
+endif()
+include_directories(${SDL2_INCLUDE_DIR})
 
-target_link_libraries(IMGUI PUBLIC SDL2main SDL2 ${CMAKE_DL_LIBS})
+#ImGui
+CPMAddPackage(
+        NAME IMGUI
+        VERSION 1.88
+        URL "https://github.com/ocornut/imgui/archive/refs/tags/v1.88.zip"
+)
+IF(IMGUI_ADDED)
+    add_library(IMGUI STATIC)
+
+    target_sources( IMGUI
+            PRIVATE
+            ${IMGUI_SOURCE_DIR}/imgui_demo.cpp
+            ${IMGUI_SOURCE_DIR}/imgui_draw.cpp
+            ${IMGUI_SOURCE_DIR}/imgui_tables.cpp
+            ${IMGUI_SOURCE_DIR}/imgui_widgets.cpp
+            ${IMGUI_SOURCE_DIR}/imgui.cpp
+
+            PRIVATE
+            ${IMGUI_SOURCE_DIR}/backends/imgui_impl_sdlrenderer.cpp
+            ${IMGUI_SOURCE_DIR}/backends/imgui_impl_sdl.cpp
+            )
+    target_include_directories( IMGUI
+            PUBLIC ${IMGUI_SOURCE_DIR}
+            PUBLIC ${IMGUI_SOURCE_DIR}/backends
+            )
+
+    target_link_libraries(IMGUI PUBLIC SDL2-static ${CMAKE_DL_LIBS})
+ENDIF()
+
+
 
 #set( ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "Build assimp tools" )
 #set( ASSIMP_BUILD_TESTS OFF CACHE BOOL "Build assimp tests" )

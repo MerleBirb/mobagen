@@ -88,6 +88,8 @@ struct Color32 {
     explicit Color32(uint32_t packed);
     explicit Color32(uint8_t r, uint8_t g, uint8_t b, uint8_t a=255);
 
+    uint32_t GetPacked();
+
     // unary operations
     Color32 operator- () const;
     Color32 operator+ () const;
@@ -118,8 +120,10 @@ struct Color32 {
     uint8_t& operator[] (const int& i);
 
     // random
-    static Color32 RandomColor(int min=0, int max=0);
+    static Color32 RandomColor(int min=0, int max=255);
     static Color32 RandomColor(int rmin, int rmax, int gmin, int gmax, int bmin, int bmax, int amin=0, int amax=0);
+
+    static Color32 LerpColor(Color32 c1, Color32 c2, float a);
 
     // intensity
     Color32 Shade(float);
