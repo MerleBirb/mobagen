@@ -5,8 +5,11 @@
 
 class HydraulicErosionGenerator : ScenarioGeneratorBase
 {
- private:
+private:
 
+	int size;
+
+	// source data
 	
 
 public:
