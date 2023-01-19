@@ -73,4 +73,4 @@ std::vector<Color32> ImprovedGenerator::Generate(int sideSize, float displacemen
 	return colors;
 }
 
-std::string ImprovedGenerator::GetName() { return "MERLE'S IMPROVED GENERATOR"; }
+std::string ImprovedGenerator::GetName() { return "MERLE'S TERRAIN GENERATOR"; }
