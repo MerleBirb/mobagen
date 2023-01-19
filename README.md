@@ -1,18 +1,29 @@
 # MoBaGEn
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1d95c33e061442e39d7e1a697b28cb10)](https://www.codacy.com/gh/InfiniBrains/mobagen/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=InfiniBrains/mobagen&amp;utm_campaign=Badge_Grade) ![GitHub language count](https://img.shields.io/github/languages/count/InfiniBrains/mobagen) ![GitHub search hit counter](https://img.shields.io/github/search/InfiniBrains/mobagen/todo) ![Lines of code](https://img.shields.io/tokei/lines/github.com/InfiniBrains/mobagen) ![GitHub all releases](https://img.shields.io/github/downloads/InfiniBrains/mobagen/total) ![GitHub contributors](https://img.shields.io/github/contributors/InfiniBrains/mobagen)
+MoBaGEn - Module Based Game Engine - Educational tool to teach game programming concepts.
 
-[![Windows](https://github.com/InfiniBrains/mobagen/actions/workflows/windows.yml/badge.svg)](https://github.com/InfiniBrains/mobagen/actions/workflows/windows.yml) [![Web](https://github.com/InfiniBrains/mobagen/actions/workflows/web.yml/badge.svg)](https://github.com/InfiniBrains/mobagen/actions/workflows/web.yml) [![Linux](https://github.com/InfiniBrains/mobagen/actions/workflows/linux.yml/badge.svg)](https://github.com/InfiniBrains/mobagen/actions/workflows/linux.yml) [![OSX](https://github.com/InfiniBrains/mobagen/actions/workflows/osx.yml/badge.svg)](https://github.com/InfiniBrains/mobagen/actions/workflows/osx.yml) [![pages](https://github.com/InfiniBrains/mobagen/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/InfiniBrains/mobagen/actions/workflows/pages/pages-build-deployment) 
+Join us: [![say thanks](https://img.shields.io/badge/Say%20Thanks-👍-1EAEDB.svg)](https://github.com/InfiniBrains/mobagen/stargazers) [![Discord](https://img.shields.io/discord/956922983727915078)](https://discord.gg/9CdJeQ2XKB)
 
+Metrics: [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1d95c33e061442e39d7e1a697b28cb10)](https://www.codacy.com/gh/InfiniBrains/mobagen/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=InfiniBrains/mobagen&amp;utm_campaign=Badge_Grade) ![GitHub language count](https://img.shields.io/github/languages/count/InfiniBrains/mobagen) ![GitHub search hit counter](https://img.shields.io/github/search/InfiniBrains/mobagen/todo) ![Lines of code](https://img.shields.io/tokei/lines/github.com/InfiniBrains/mobagen) ![GitHub all releases](https://img.shields.io/github/downloads/InfiniBrains/mobagen/total) ![GitHub contributors](https://img.shields.io/github/contributors/InfiniBrains/mobagen)
+
+CI: [![Windows](https://github.com/InfiniBrains/mobagen/actions/workflows/windows.yml/badge.svg)](https://github.com/InfiniBrains/mobagen/actions/workflows/windows.yml) [![Web](https://github.com/InfiniBrains/mobagen/actions/workflows/web.yml/badge.svg)](https://github.com/InfiniBrains/mobagen/actions/workflows/web.yml) [![Linux](https://github.com/InfiniBrains/mobagen/actions/workflows/linux.yml/badge.svg)](https://github.com/InfiniBrains/mobagen/actions/workflows/linux.yml) [![OSX](https://github.com/InfiniBrains/mobagen/actions/workflows/osx.yml/badge.svg)](https://github.com/InfiniBrains/mobagen/actions/workflows/osx.yml) [![pages](https://github.com/InfiniBrains/mobagen/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/InfiniBrains/mobagen/actions/workflows/pages/pages-build-deployment) 
+
+# Try online
+Before checking it online, some demos are intended to be implemented by you. So most of the demos would looks like empty;
+
+- [Empty demos](https://infinibrains.github.io/mobagen/).
+- [Flocking demo](https://infinibrains.com/data/flocking) for [this AI class](https://docs.google.com/presentation/d/1OBEY-tb_ubgoq6Mk9lEsCFaYLINni3oPwjH8iAXEQQM/edit?usp=sharing).
+
+Want to showcase your work here? [Create a pull request](https://github.com/InfiniBrains/mobagen/pulls).
+
+Do you like it?
 
 # Motivation
-I started this game engine project because:
-- I want to sharpen my C++ skills; 
-- I love game engine architecture;
-- I don't want to recreate all game engine stuff, I want to glue them all. "Life es too short to build a game engine from scratch"  
-- I want to have full control of all the processes from code to the delivery;
+- Act as a central point to teach basic game dev concepts;
+- Build a regional community around game dev to bring attention to our people;
+- Have full control of all the processes from code to the delivery;
 
-## Follow me!
+## Follow us!
 Did you like this project? Follow me on [social medias](https://linktree.com/tolstenko)
 
 # Why C++
@@ -27,13 +38,15 @@ It is the best all-around solution to:
 - Build complex projects in easy way
 - Most relevant libs supports it 
 
-# Why CPP-PM
+# Why CPM
 - Best package manager to import and use third party libs from source code with low maintenance code.
 
 # Architecture
-Please refer to [this doc.](docs/Architecture.md)
+- Please refer to [this doc.](docs/Architecture.md)
+- [C++ core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
 
 # Restrictions
+- Don't recreate all game engine stuff, glue them all. "Life es too short to build a game engine from scratch";
 - If a library do not easily compile on all supported platforms, we won't use it.
 - Use consolidated libs and do not reinvent the wheel (only if is strictly needed)
 - Start small and make small steps towards the goal.
@@ -42,16 +55,35 @@ Please refer to [this doc.](docs/Architecture.md)
 - Target the latest C++ version that is portable to our targets(iOS, Android, Windows, Linux, OSX, WEB). [compiler support table](https://en.cppreference.com/w/cpp/compiler_support).
 - CI should be able to build to all targets at once.
 
-# Examples
-If you want to try code some AI examples, you need to follow this guide in order undestand and do your activity. https://docs.google.com/presentation/d/1OBEY-tb_ubgoq6Mk9lEsCFaYLINni3oPwjH8iAXEQQM/edit?usp=sharing
-- [Flocking demo](https://infinibrains.com/data/flocking)
+# Essential Modules
+- [ ] Core
+- [ ] Job/Task Module
+- [ ] Resources Manager
 
+# Optional modules
+- [ ] Graphics
+  - [x] 2D - Needs to not rely on SDL_Renderer anymore
+  - [ ] 3D
+- [ ] Physics
+- [ ] Sound
+- [ ] Networking
+- [ ] Scripting
+- [ ] GUI
+  - [x] ImGUI via 2D renderer - needs to become agnostic
+- [ ] Input
+- [ ] Game Components
+- [ ] Scene
+- [ ] Logger
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
+# Todo List
+- [ ] Image Editor Application
+    - [ ] Design Editor similar to Slicer3D
+    - [ ] DICOM loader
+    - [ ] 3 viewports synced with exam data
+- [ ] Game Editor Applications
+    - [ ] Compilation of scripts
+    - [ ] Execution of scripts within their respective contexts
+    - [ ] Manipulation of variables within script contexts
+    - [ ] Support importing and exporting compiled scripts
 
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=tolstenko)](https://github.com/anuraghazra/github-readme-stats)

@@ -1,8 +1,13 @@
+OPTION(BUILD_EDITOR "BUILD_EDITOR" OFF)
+
+if(BUILD_EDITOR)
 file(GLOB EDITOR_INC
+        CONFIGURE_DEPENDS
         ${CMAKE_CURRENT_SOURCE_DIR}/*.h
         ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp)
 
 file(GLOB EDITOR_SRC
+        CONFIGURE_DEPENDS
         ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/*.c
         )
@@ -48,15 +53,21 @@ install (FILES ${EDITOR_INC} DESTINATION include/editor)
 #   add_custom_target(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
 # ENDIF()
 
+#include(itk.cmake)
 add_executable(editor ${EDITOR_SRC} ${EDITOR_INC})
-
-target_include_directories(editor PUBLIC ${SDL2_INCLUDE_DIR} ${CORE_INC_DIR})
-target_link_libraries (editor PUBLIC SDL2-static IMGUI core)
-
+#target_include_directories(editor PUBLIC ${ITKGDCM_INCLUDE_DIRS})
+target_link_libraries (editor PUBLIC SDL2-static IMGUI engine core)
+#target_link_libraries (editor PUBLIC SDL2-static IMGUI engine core itkgdcmDSED-5.3 itkgdcmCommon-5.3 itkzlib-5.3)
 IF(EMSCRIPTEN)
-    target_compile_options(editor PUBLIC "-O0")
-    target_link_options(editor PUBLIC "-s WASM=0 -s FULL_ES2=1 -s USE_SDL=0 -s EXPORT_ALL=1")
+    target_compile_options(editor PUBLIC "-Oz")
+    target_link_options(editor PUBLIC "-s WASM=2 -s USE_SDL=0 -s EXPORT_ALL=1")
 ENDIF()
 
-#target_sources(editor PUBLIC ${TARGET_SRC} )
+target_include_directories(editor PUBLIC
+        ${SDL2_INCLUDE_DIR}
+        ${ENGINE_INC_DIR}
+        ${CORE_INC_DIR}
+)
 
+#target_sources(editor PUBLIC ${TARGET_SRC} )
+ENDIF()

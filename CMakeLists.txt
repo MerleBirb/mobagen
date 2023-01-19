@@ -1,130 +1,71 @@
-cmake_minimum_required(VERSION 3.23.2)
+cmake_minimum_required(VERSION 3.16.3 FATAL_ERROR)
 
-# CPM REGION
-#SET(FETCHCONTENT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external CACHE STRING "FETCHCONTENT_BASE_DIR")
-set(CPM_DOWNLOAD_VERSION 0.36.0)
-if(CPM_SOURCE_CACHE)
-    set(CPM_DOWNLOAD_LOCATION "${CPM_SOURCE_CACHE}/cpm/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
-elseif(DEFINED ENV{CPM_SOURCE_CACHE})
-    set(CPM_DOWNLOAD_LOCATION "$ENV{CPM_SOURCE_CACHE}/cpm/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
-else()
-    set(CPM_DOWNLOAD_LOCATION "${CMAKE_BINARY_DIR}/cmake/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
+# CPM downloader
+include(external/cpm.cmake)
+
+# project declaration
+project(MoBaGEn
+        VERSION 0.0.1
+        HOMEPAGE_URL "https://infinbrains.com"
+        DESCRIPTION "Module Based Game Engine"
+)
+
+# Include guards
+if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
+    message(FATAL_ERROR "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there.")
 endif()
-get_filename_component(CPM_DOWNLOAD_LOCATION ${CPM_DOWNLOAD_LOCATION} ABSOLUTE)
-if(NOT (EXISTS ${CPM_DOWNLOAD_LOCATION}))
-    message(STATUS "Downloading CPM.cmake to ${CPM_DOWNLOAD_LOCATION}")
-    file(DOWNLOAD
-            https://github.com/cpm-cmake/CPM.cmake/releases/download/v${CPM_DOWNLOAD_VERSION}/CPM.cmake
-            ${CPM_DOWNLOAD_LOCATION}
-            )
-endif()
-include(${CPM_DOWNLOAD_LOCATION})
 
-#project
-project(mobagen)
+# compiler checks
+include(external/compilerchecks.cmake)
 
-set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-set(CMAKE_C_STANDARD 17)
-#set(CMAKE_C_STANDARD_REQUIRED ON)
-
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-#CHECK MINGW
-IF(NOT DEFINED MINGW)
-    SET(MINGW OFF)
-ENDIF()
-
-# check if mingw
-#IF("${CMAKE_GENERATOR}" MATCHES "(M|m?)in(G|g?)(W|w?)")
-#    SET(MINGW ON)
-#    MESSAGE(STATUS "MinGW Detected")
-#    MESSAGE(STATUS "${CMAKE_GENERATOR}")
-#ELSE()
-#    SET(MINGW OFF CACHE BOOL "MINGW")
-#ENDIF()
-
-## make this only for VS and not WIN32
-#if(DEFINED WIN32 AND NOT DEFINED MINGW)
-#    SET(CMAKE_CXX_FLAGS "/w /EHsc")
-#endif()
-
-#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
-#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
-
-# CHECK OR APPLE MACHINE
-IF(NOT DEFINED APPLE)
-    set(APPLE OFF)
-    MESSAGE(STATUS "NOT APPLE MACHINE")
-ENDIF()
-
-
-find_program(LSB_RELEASE_EXEC lsb_release)
-if(LSB_RELEASE_EXEC)
-    execute_process(COMMAND ${LSB_RELEASE_EXEC} -is
-            OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-            )
-    IF(LSB_RELEASE_ID_SHORT)
-        message(STATUS "ubuntu detected")
-        SET(UBUNTU ON)
-    ENDIF()
-ENDIF()
-
-# make this more general approach
-#set(CMAKE_POSITION_INDEPENDENT_CODE ON CACHE BOOL "CMAKE_POSITION_INDEPENDENT_CODE")
-#IF(DEFINED UBUNTU)
-#    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-#    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
-#ENDIF()
-
-MESSAGE(STATUS "MSYS=${MSYS}")
-MESSAGE(STATUS "CYGWIN=${CYGWIN}")
-MESSAGE(STATUS "MINGW=${MINGW}")
-MESSAGE(STATUS "WIN32=${WIN32}")
-MESSAGE(STATUS "MSVC=${MSVC}")
-MESSAGE(STATUS "UBUNTU=${UBUNTU}")
-
+# set output dirs
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/libs)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/libs)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+# set linkage
 LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/libs)
-LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/libs/Debug)
+#LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/libs/Debug)
 
 IF(EMSCRIPTEN)
     message(STATUS "emscripten build")
-    #  SET(CMAKE_CXX_FLAGS "--preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets/ -s WASM=0 -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL=2 -s DISABLE_EXCEPTION_CATCHING=2 -s USE_PTHREADS=1 --proxy-to-worker -s FETCH=1")
-#    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets/ -s WASM=0 -s DISABLE_EXCEPTION_CATCHING=2 --proxy-to-worker -s FETCH=1")
-#    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets/")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Oz -s WASM=2 -s USE_SDL=0 -s ASYNCIFY")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Oz -s WASM=2 -s USE_SDL=0 -s ASYNCIFY")
 
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -s WASM=0 -s FULL_ES2=1 -s USE_SDL=0 -s EXPORT_ALL=1")
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -s WASM=0 -s FULL_ES2=1 -s USE_SDL=0 -s EXPORT_ALL=1")
-
-    add_definitions(-DASSET_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
-
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/html/index.html ${CMAKE_BINARY_DIR}/bin/index.html COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/html/catchthecat.html ${CMAKE_BINARY_DIR}/bin/catchthecat.html COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/html/flocking.html ${CMAKE_BINARY_DIR}/bin/flocking.html COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/html/maze.html ${CMAKE_BINARY_DIR}/bin/maze.html COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/html/scenario.html ${CMAKE_BINARY_DIR}/bin/scenario.html COPYONLY)
+    file(GLOB HTML "${CMAKE_CURRENT_SOURCE_DIR}/html/*")
+    file(COPY ${HTML} DESTINATION ${CMAKE_BINARY_DIR}/bin/)
 ENDIF()
 
-set ( SDL2_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/SDL/include)
-# import the generated SDL2 config dir
-
 add_subdirectory(external)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external/SDL/include)
 add_subdirectory(core)
-
-#SET(CORE_INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/core)
-
+add_subdirectory(engine)
 add_subdirectory(editor)
 add_subdirectory(examples)
 
-#add_library(main SHARED main.cpp)
-#target_sources(main PRIVATE main.cpp)
-#target_link_libraries(main SDL2 ${SDL2_LIBRARY})
+# first we can indicate the documentation build as an option and set it to ON by default
+#option(BUILD_DOC "Build documentation" ON)
+#IF(BUILD_DOC)
+#    add_subdirectory(docs)
+#ENDIF()
+## check if Doxygen is installed
+#find_package(Doxygen)
+#if (DOXYGEN_FOUND)
+#    # set input and output files
+#    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/../docs/Doxyfile.in)
+#    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+#
+#    # request to configure the file
+#    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+#    message("Doxygen build started")
+#
+#    # note the option ALL which allows to build the docs together with the application
+#    add_custom_target( doc_doxygen ALL
+#            COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+#            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#            COMMENT "Generating API documentation with Doxygen"
+#            VERBATIM )
+#else (DOXYGEN_FOUND)
+#    message("Doxygen need to be installed to generate the doxygen documentation")
+#endif (DOXYGEN_FOUND)
 
+# todo: follow https://github.com/TheLartians/ModernCppStarter
