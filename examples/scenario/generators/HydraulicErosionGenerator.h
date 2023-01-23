@@ -11,7 +11,7 @@ private:
 public:
 
 	std::vector<Color32> Generate(int sideSize, float displacement = 0) override;
-	std::string GetName() { return "Water Erosion"; }
+	std::string GetName() { return "Merle's Water Erosion"; }
 };
 
 
