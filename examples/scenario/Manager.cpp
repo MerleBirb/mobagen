@@ -2,6 +2,7 @@
 #include "Point2D.h"
 #include "generators/RandomGenerator.h"
 #include "generators/ImprovedGenerator.h"
+#include "generators/HydraulicErosionGenerator.h"
 #include <chrono>
 #include <iostream>
 Manager::Manager(Engine* engine, int size)
@@ -9,6 +10,7 @@ Manager::Manager(Engine* engine, int size)
   // todo: add your generator here
   generators.push_back(new RandomScenarioGenerator());
   generators.push_back(new ImprovedGenerator());
+  generators.push_back(new HydraulicErosionGenerator());
 }
 
 void Manager::SetPixels(std::vector<Color32> &input) {
