@@ -6,7 +6,10 @@
 class HydraulicErosionGenerator : public ScenarioGeneratorBase
 {
 private:
+	float elevation[2048][2048];
+	float frequency = 1.0f;
 
+	void generateRandomElevation();
 
 public:
 

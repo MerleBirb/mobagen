@@ -10,6 +10,7 @@ Manager::Manager(Engine* engine, int size)
     : GameObject(engine) {
   // todo: add your generator here
   generators.push_back(new HydraulicErosionGenerator());
+  generators.push_back(new ParticleGenerator());
   generators.push_back(new ImprovedGenerator());
   generators.push_back(new RandomScenarioGenerator());
 }

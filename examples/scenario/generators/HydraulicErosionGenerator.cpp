@@ -5,9 +5,6 @@
 
 std::vector<Color32> HydraulicErosionGenerator::Generate(int sideSize, float displacement)
 {
-    const int DISP_MULTIPLIER = 50; // displacement multiplier
-    const float FREQUENCY = 1.0f;
-
     std::vector<Color32> colors;
     
     // create the noise cells
@@ -29,29 +26,25 @@ std::vector<Color32> HydraulicErosionGenerator::Generate(int sideSize, float dis
             // 0 is the middle
             float posY = (float)((l - sideSize / 2)) / ((float)sideSize / 2);
             float posX = (float)((c - sideSize / 2)) / ((float)sideSize / 2);
-
-            float islandInfluence = (2 - (abs(posY) + abs(posX))) / 2;
-            islandInfluence *= 255;
+            float const islandInfluence = ((1 - posX * posX) * (1 - posY * posY)) * 255;
 
             // noise values generated between 0 - 255
-            float c1 = ((perlin.GetNoise((float)c, (float)l, displacement * DISP_MULTIPLIER) + 1) / 2) * 255;
-            //float c2 = ((cellular.GetNoise((float)c, (float)l, displacement * DISP_MULTIPLIER) + 1) / 2) * 255;
-            
-            auto avg = (c1 + islandInfluence) / 2;
+            float const noiseInfluence = ((1 + perlin.GetNoise((float)l, (float)c, displacement * 50)) / 2) * 255;
+            elevation[l][c] = ((frequency * (islandInfluence)) + (frequency * (noiseInfluence))) / 2;
 
-            if (avg < 50)
+            if (elevation[l][c] < 50)
             {
                 colors.emplace_back(Color::DarkBlue);
             }
-            else if (avg < 100)
+            else if (elevation[l][c] < 100)
             {
                 colors.emplace_back(Color::Yellow);
             }
-            else if (avg < 150)
+            else if (elevation[l][c] < 150)
             {
                 colors.emplace_back(Color::Green);
             }
-            else if (avg < 200)
+            else if (elevation[l][c] < 200)
             {
                 colors.emplace_back(Color::Brown);
             }
